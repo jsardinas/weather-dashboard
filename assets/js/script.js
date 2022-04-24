@@ -12,9 +12,17 @@ const uvIndexColorCode = ['#289500','#289500','#289500',
                         '#F85900','#F85900',
                         '#D80010','#D80010',
                         '#6B49C8'];
+                    
+const weatherIcons = {
+    'Clear' : 'fa-sun',
+    'Rain' : 'fa-cloud-rain',
+    'Clouds' : 'fa-cloud',
+    'Snow' : 'fa-snowflake',
+    'Thunderstorm' : 'fa-cloud-bolt',
+    'Drizzle' : 'fa-umbrella',
+}
 
 function getForecastAsync(lat, lon){
-    console.log(lat, lon);
     let apiUrl = `${apiBaseUrl}/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&appid=${apiKey}&units=imperial`;
     return fetch(apiUrl)
     .then(response => {return response.json();});
@@ -42,12 +50,14 @@ function getLatLonAsync(city){
 
 $(document).ready(()=>{
     forecastIds = [1,2,3,4,5].map(x=>`forecast${x}`);
+    weatherIconIds = [1,2,3,4,5].map(x=>`weatherIcon${x}`);
 
     historyElement = $('.history')[0];
     loadHistory();
 
     $('#searchBtn').on('click', event => {
         let city = $('#cityInput').val();
+        $('#cityInput').val("");
         getWeather(city);
     });
 });
@@ -58,12 +68,14 @@ function getWeather(city){
     .then(weather => {
         //featured card
         $('#featuredCard h2').text(`${city} (${moment().format('M/DD/YYYY')})`);
+        let weatherMain = weather.current.weather[0].main;
+        console.log(weatherMain);
+        $('#weatherIconFeatured').addClass(`fa ${weatherIcons[weatherMain]}`)
         $('#temp').text(`${Math.round(weather.current.temp)} °F (feels like ${Math.round(weather.current.feels_like)} °F)`);
         $('#wind').text(`${weather.current.wind_speed} mph`);
         $('#humidity').text(`${weather.current.humidity} %`);
         $('#uvIndex').text(`${weather.current.uvi}`);
         let uvIndex = weather.current.uvi >= 11 ? 11 : Math.floor(weather.current.uvi);
-        console.log(uvIndex);
         $('#uvIndex').css('background-color', uvIndexColorCode[uvIndex]);
         
         //forecast cards
@@ -71,6 +83,9 @@ function getWeather(city){
         
         for(let i = 1; i <= 5; ++i){
             $(`#${forecastIds[i-1]} h5`).text(moment.unix(forecast[i].dt).format('M/DD/YYYY'));
+            let weatherMain = forecast[i].weather[0].main;
+            console.log(i, weatherMain);
+            $(`#weatherIcon${i}`).addClass(`fa ${weatherIcons[weatherMain]}`)
             $(`#temp${i}`).text(`${Math.round(forecast[i].temp.day)} °F`);
             $(`#wind${i}`).text(`${forecast[i].wind_speed} mph`);
             $(`#humidity${i}`).text(`${forecast[i].humidity} %`);
@@ -89,7 +104,7 @@ function getWeather(city){
         updateHistory(searchHistory);
     })
     .catch(() => {
-        $('#featuredCard h2').text(`${city} aint no city I've heard of`);
+        $('#featuredCard h2').text(`${city} ain't no city I ever heard of`);
         $('#temp').text("");
         $('#wind').text("");
         $('#humidity').text("");
@@ -105,7 +120,6 @@ function getWeather(city){
 }
 
 function loadHistory(){
-    console.log('load history');
     searchHistory = JSON.parse(window.localStorage.getItem(historyKey));
     updateHistory(searchHistory);
 }
