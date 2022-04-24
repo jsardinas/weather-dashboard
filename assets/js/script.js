@@ -107,6 +107,7 @@ function getWeather(city){
         $('#wind').text("");
         $('#humidity').text("");
         $('#uvIndex').text("");
+        $('#uvIndex').css('background-color', 'transparent');
 
         for(let i = 1; i <= 5; ++i){
             $(`#${forecastIds[i-1]} h5`).text("");
