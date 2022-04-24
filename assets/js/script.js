@@ -6,6 +6,12 @@ var searchHistory = [];
 var maxHistoryCapacity = 10;
 var historyKey = "history";
 var historyElement;
+var forecastIds;
+var uvIndexColorCode = ['#289500','#289500','#289500',
+                        '#F7E400','#F7E400','#F7E400',
+                        '#F85900','#F85900',
+                        '#D80010','#D80010',
+                        '#6B49C8'];
 
 function getForecastAsync(lat, lon){
     console.log(lat, lon);
@@ -25,10 +31,18 @@ function getLatLonAsync(city){
     let apiUrl = `${apiBaseUrl}/weather?q=${city}&appid=${apiKey}`;
     return fetch(apiUrl)
     .then(response =>{return response.json();})
-    .then(json => {return {'lat': json.coord.lat, 'lon': json.coord.lon};});
+    .then(json => {
+        if(json.cod == 200)
+            return {'lat': json.coord.lat, 'lon': json.coord.lon};
+        else
+            return Promise.reject();
+    })
+    .catch(() => {return Promise.reject()});
 }
 
 $(document).ready(()=>{
+    forecastIds = [1,2,3,4,5].map(x=>`forecast${x}`);
+
     historyElement = $('.history')[0];
     loadHistory();
 
@@ -36,8 +50,6 @@ $(document).ready(()=>{
         let city = $('#cityInput').val();
         getWeather(city);
     });
-
-    
 });
 
 function getWeather(city){
@@ -50,10 +62,13 @@ function getWeather(city){
         $('#wind').text(`${weather.current.wind_speed} mph`);
         $('#humidity').text(`${weather.current.humidity} %`);
         $('#uvIndex').text(`${weather.current.uvi}`);
+        let uvIndex = weather.current.uvi >= 11 ? 11 : Math.floor(weather.current.uvi);
+        console.log(uvIndex);
+        $('#uvIndex').css('background-color', uvIndexColorCode[uvIndex]);
         
         //forecast cards
         var forecast = weather.daily;
-        var forecastIds = [1,2,3,4,5].map(x=>`forecast${x}`);
+        
         for(let i = 1; i <= 5; ++i){
             $(`#${forecastIds[i-1]} h4`).text(moment.unix(forecast[i].dt).format('M/DD/YYYY'));
             $(`#temp${i}`).text(`${Math.round(forecast[i].temp.day)} °F`);
@@ -72,6 +87,20 @@ function getWeather(city){
         searchHistory.shift();
         window.localStorage.setItem(historyKey, JSON.stringify(searchHistory));
         updateHistory(searchHistory);
+    })
+    .catch(() => {
+        $('#featuredCard h2').text(`${city} aint no city I've heard of`);
+        $('#temp').text("");
+        $('#wind').text("");
+        $('#humidity').text("");
+        $('#uvIndex').text("");
+
+        for(let i = 1; i <= 5; ++i){
+            $("");
+            $(`#temp${i}`).text("");
+            $(`#wind${i}`).text("");
+            $(`#humidity${i}`).text("");
+        }
     });
 }
 
