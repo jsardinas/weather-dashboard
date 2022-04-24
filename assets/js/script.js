@@ -69,7 +69,6 @@ function getWeather(city){
         //featured card
         $('#featuredCard h2').text(`${city} (${moment().format('M/DD/YYYY')})`);
         let weatherMain = weather.current.weather[0].main;
-        console.log(weatherMain);
         $('#weatherIconFeatured').addClass(`fa ${weatherIcons[weatherMain]}`)
         $('#temp').text(`${Math.round(weather.current.temp)} °F (feels like ${Math.round(weather.current.feels_like)} °F)`);
         $('#wind').text(`${weather.current.wind_speed} mph`);
@@ -84,7 +83,6 @@ function getWeather(city){
         for(let i = 1; i <= 5; ++i){
             $(`#${forecastIds[i-1]} h5`).text(moment.unix(forecast[i].dt).format('M/DD/YYYY'));
             let weatherMain = forecast[i].weather[0].main;
-            console.log(i, weatherMain);
             $(`#weatherIcon${i}`).addClass(`fa ${weatherIcons[weatherMain]}`)
             $(`#temp${i}`).text(`${Math.round(forecast[i].temp.day)} °F`);
             $(`#wind${i}`).text(`${forecast[i].wind_speed} mph`);
