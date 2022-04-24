@@ -1,13 +1,13 @@
-var apiKey = '8d807a4bc8daa6edc68bfec5f653ae4c';
+const apiKey = '8d807a4bc8daa6edc68bfec5f653ae4c';
 var apiBaseUrl = 'https://api.openweathermap.org/data/2.5';
 var lat;
 var lon;
 var searchHistory = [];
-var maxHistoryCapacity = 10;
-var historyKey = "history";
+const maxHistoryCapacity = 10;
+const historyKey = "history";
 var historyElement;
 var forecastIds;
-var uvIndexColorCode = ['#289500','#289500','#289500',
+const uvIndexColorCode = ['#289500','#289500','#289500',
                         '#F7E400','#F7E400','#F7E400',
                         '#F85900','#F85900',
                         '#D80010','#D80010',
@@ -70,7 +70,7 @@ function getWeather(city){
         var forecast = weather.daily;
         
         for(let i = 1; i <= 5; ++i){
-            $(`#${forecastIds[i-1]} h4`).text(moment.unix(forecast[i].dt).format('M/DD/YYYY'));
+            $(`#${forecastIds[i-1]} h5`).text(moment.unix(forecast[i].dt).format('M/DD/YYYY'));
             $(`#temp${i}`).text(`${Math.round(forecast[i].temp.day)} °F`);
             $(`#wind${i}`).text(`${forecast[i].wind_speed} mph`);
             $(`#humidity${i}`).text(`${forecast[i].humidity} %`);
@@ -96,7 +96,7 @@ function getWeather(city){
         $('#uvIndex').text("");
 
         for(let i = 1; i <= 5; ++i){
-            $("");
+            $(`#${forecastIds[i-1]} h5`).text("");
             $(`#temp${i}`).text("");
             $(`#wind${i}`).text("");
             $(`#humidity${i}`).text("");

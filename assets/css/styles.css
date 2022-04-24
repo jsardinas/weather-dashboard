@@ -8,3 +8,44 @@
     border-top: 1px solid #ccc;
     margin-top: 20px;
 }
+
+.customcard{
+    color: white;
+    background-color: #2F3E51;
+}
+
+#uvIndex{
+    padding: 0px 10px 0px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+#cityInput{
+    margin-bottom: 10px;
+}
+
+#searchBtn{
+    width: 100%;
+}
+
+.historyItem{
+    background-color: #AEAEAE;
+    margin: 10px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 4px;
+}
+
+.historyItem:hover{
+    background-color: #BDBDBD;
+}
+
+#featuredCard{
+    padding: 10px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.forecast{
+    padding: 22px;
+}
