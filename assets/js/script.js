@@ -1,5 +1,5 @@
 const apiKey = '8d807a4bc8daa6edc68bfec5f653ae4c';
-var apiBaseUrl = 'https://api.openweathermap.org/data/2.5';
+var apiBaseUrl = 'http://api.openweathermap.org/data/2.5';
 var lat;
 var lon;
 var searchHistory = [];
@@ -120,6 +120,8 @@ function getWeather(city){
 
 function loadHistory(){
     searchHistory = JSON.parse(window.localStorage.getItem(historyKey));
+    if (searchHistory == null)
+        searchHistory = [];
     updateHistory(searchHistory);
 }
 
